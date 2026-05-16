@@ -1,4 +1,4 @@
 package gt.umg.progra3.cafecito.DTO.pesaje;
 
-public record pesaje() {
+public class QrPesaje {
 }
