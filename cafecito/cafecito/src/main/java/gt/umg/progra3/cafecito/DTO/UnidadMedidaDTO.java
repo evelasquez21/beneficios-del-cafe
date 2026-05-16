@@ -1,4 +1,7 @@
 package gt.umg.progra3.cafecito.DTO;
 
-public class UnidadMedidaDTO {
+public record UnidadMedidaDTO (
+        String abrev,
+        String descripcion
+) {
 }

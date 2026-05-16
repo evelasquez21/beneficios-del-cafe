@@ -1,4 +1,12 @@
 package gt.umg.progra3.cafecito.repository.pesaje;
 
-public interface BoletaRepository {
+import gt.umg.progra3.cafecito.model.pesaje.Boleta;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface BoletaRepository extends JpaRepository<Boleta, Long> {
+    Optional<Boleta> findByPesajeId(Long id);
 }

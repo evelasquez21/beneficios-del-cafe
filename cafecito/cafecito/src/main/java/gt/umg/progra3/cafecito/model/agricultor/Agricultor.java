@@ -14,6 +14,7 @@ public class Agricultor{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_agricultor")
     private Long id;
+    @Column(unique = true)
     private Long nit;
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

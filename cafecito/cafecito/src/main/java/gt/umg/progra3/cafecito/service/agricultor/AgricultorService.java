@@ -1,6 +1,7 @@
 package gt.umg.progra3.cafecito.service.agricultor;
 
 import gt.umg.progra3.cafecito.DTO.agricultor.AgricultorRegDTO;
+import gt.umg.progra3.cafecito.DTO.agricultor.AgricultorVistaDTO;
 import gt.umg.progra3.cafecito.DTO.agricultor.ObsAgricultorDTO;
 import gt.umg.progra3.cafecito.model.Persona;
 import gt.umg.progra3.cafecito.model.agricultor.Agricultor;
@@ -14,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AgricultorService {
@@ -31,6 +34,9 @@ public class AgricultorService {
     @Autowired
     private AgricultorObssRepository agricultorObssRepo;
 
+    @Autowired
+    private BitacoraAgService bitacoraAgService;
+
     public String saveAgricultor(AgricultorRegDTO agricultor){
         Persona nuevaPersona;
         Agricultor nuevoAgricultor;
@@ -38,6 +44,7 @@ public class AgricultorService {
         // Validaciones de repetición - (actualización de datos)
         nuevaPersona = personaRepo.findById(agricultor.cui()).orElse(new Persona());
         nuevoAgricultor = agricultorRepo.findById(agricultor.id()).orElse(new Agricultor());
+        agricultorRepo.findByNit(agricultor.nit()).orElseThrow(() -> new RuntimeException("Ya existe ese nit registrado"));
 
         // Guardar persona
         nuevaPersona.setCui(agricultor.cui());
@@ -52,11 +59,9 @@ public class AgricultorService {
         nuevoAgricultor.setFechaCreacion(LocalDateTime.now());
 
         agricultorRepo.save(nuevoAgricultor);
-        return "Agricultor registrado";
-    }
+        bitacoraAgService.registrarAccion("Registró un nuevo agricultor con NIT: " + nuevoAgricultor.getNit());
 
-    public List<Agricultor> findAllAgricultor(){
-        return agricultorRepo.findAll();
+        return "Agricultor registrado";
     }
 
     public  String addObservation(ObsAgricultorDTO observacion){
@@ -81,5 +86,38 @@ public class AgricultorService {
 
         agricultorObssRepo.save(observaciones);
         return "Observación creada";
+    }
+
+    public List<AgricultorVistaDTO> getAgricultores(){
+        List<Agricultor> agricultores = agricultorRepo.findAll();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        List<AgricultorVistaDTO> dtos = agricultores.stream()
+                .map(agricultor -> new AgricultorVistaDTO(
+                        agricultor.getId(),
+                        nitFormatter(agricultor.getNit()),
+                        agricultor.getPersona().getCui(),
+                        agricultor.getPersona().getNombreCompleto(),
+                        agricultor.getPersona().getEstado(),
+                        agricultor.getFechaCreacion().format(formatter)
+
+                )).collect(Collectors.toList());
+        return dtos;
+    }
+
+    private String nitFormatter(Long nit) {
+        if (nit == null) return "";
+
+        String nitStr = nit.toString();
+
+        if (nitStr.length() <= 1) {
+            return nitStr;
+        }
+
+        String cuerpo = nitStr.substring(0, nitStr.length() - 1);
+        String digito = nitStr.substring(nitStr.length() - 1);
+
+        return cuerpo + "-" + digito;
     }
 }

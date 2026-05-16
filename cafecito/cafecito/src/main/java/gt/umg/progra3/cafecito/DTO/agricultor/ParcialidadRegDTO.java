@@ -8,6 +8,5 @@ public record ParcialidadRegDTO(
         Long idTransportista,
         Long idPesajeMaestro,
         String unidadMedida
-
 ) {
 }

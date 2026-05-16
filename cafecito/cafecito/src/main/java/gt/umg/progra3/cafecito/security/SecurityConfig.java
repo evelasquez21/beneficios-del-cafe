@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitamos CSRF porque usamos JWT
                 .cors(cors -> cors.configure(http))    // Permitimos CORS para Angular
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll() // Ruta pública
+                        .requestMatchers("/usuarios/login").permitAll() // Ruta pública
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()               //
                 )

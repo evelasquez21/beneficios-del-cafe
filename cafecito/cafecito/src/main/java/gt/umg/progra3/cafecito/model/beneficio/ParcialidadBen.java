@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "parcialidad_beneficio")
-public class Parcialidad {
+public class ParcialidadBen {
     @Id
     @Column(name = "id_parcialidad")
     private Long id;

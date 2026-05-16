@@ -59,18 +59,20 @@ public class UsuarioREST {
     @PostMapping("login")
     private ResponseEntity<?> login(@RequestBody UsuarioLoginDTO credenciales) {
         try {
-            // 1. Spring verifica usuario y contraseña internamente
+            // Spring verifica usuario y contraseña internamente
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(credenciales.nombreUsuario(), credenciales.password())
             );
 
-            // 2. Si es correcto, buscamos los datos del usuario
+            // Si es correcto, buscamos los datos del usuario
             UserDetails userDetails = userDetailsService.loadUserByUsername(credenciales.nombreUsuario());
 
-            // 3. Generamos el Token
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            String rolUsuario = userDetails.getAuthorities().iterator().next().getAuthority();
 
-            // 4. Se lo enviamos de vuelta a Angular
+            // Generamos el Token
+            String jwt = jwtUtil.generateToken(userDetails.getUsername(), rolUsuario);
+
+            // Se lo enviamos de vuelta a Angular
             Map<String, String> response = new HashMap<>();
             response.put("token", jwt);
             return ResponseEntity.ok(response);

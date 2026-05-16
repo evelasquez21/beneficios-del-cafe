@@ -30,11 +30,13 @@ public class Parcialidad {
     private PesajeMaestro pesajeMaestro;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "abrev", referencedColumnName = "abrev", nullable = false)
+    @JoinColumn(name = "unidad_medida", referencedColumnName = "abrev", nullable = false)
     private UnidadMedida unidadMedida;
     private float peso;
     @Column(name = "fecha_envio")
     private LocalDateTime fechaEnvio;
+    @Column(name = "fecha_entrega")
+    private LocalDateTime fechaEntrega;
 
     public Long getId() {
         return id;
@@ -98,5 +100,13 @@ public class Parcialidad {
 
     public void setFechaEnvio(LocalDateTime fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
+    }
+
+    public LocalDateTime getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public void setFechaEntrega(LocalDateTime fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 }

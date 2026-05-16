@@ -28,9 +28,11 @@ public class JwtUtil {
     // Duarción de Token de 30 mins
     private static final long EXPIRATION_TIME = 1000 * 60 * 30;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String rol) {
+
         return Jwts.builder()
                 .setSubject(username)
+                .claim("rol", rol)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
